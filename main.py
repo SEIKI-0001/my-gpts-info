@@ -20,11 +20,11 @@ app = Flask(__name__)
 # ========= Config =========
 USER_TZ = os.getenv("USER_TZ", "Asia/Tokyo")  # 例: "Asia/Tokyo"
 TZ_OFFSET = os.getenv("TZ_OFFSET", "+09:00")  # 例: "+09:00"
-API_KEY = os.getenv("API_KEY", "sk-crun-ISRrZyqsTbSRMoPmEfk3LX_xOMGi7uLssET9Li4peoI")
+API_KEY = os.getenv("API_KEY", "")
 MAX_REQUEST_SIZE = 102400
 # OAuth config (必須)
 OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID", "")
-OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET", "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")
+OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET", "")
 BASE_URL = os.getenv("BASE_URL", "https://gpts-api-v2-668935029487.asia-northeast1.run.app")  # 例: https://gpts-api-xxxxx-yyy.a.run.app
 OAUTH_REDIRECT_PATH = os.getenv("OAUTH_REDIRECT_PATH", "/oauth/callback")
 APP_SECRET = os.getenv("APP_SECRET", "")  # ランダム長文字列
