@@ -51,7 +51,9 @@ jobs:
             --region "${REGION}" \
             --platform managed \
             --allow-unauthenticated \
+            --service-account gpts-api-v2@ivory-sanctuary-458908-v1.iam.gserviceaccount.com \
             --port 8080 \
             --cpu 1 \
             --memory 512Mi \
-            --set-env-vars USER_TZ=Asia/Tokyo,TZ_OFFSET=+09:00
+            --set-env-vars BASE_URL="https://gpts-api-v2-668935029487.asia-northeast1.run.app",OAUTH_REDIRECT_PATH="/oauth/callback",USER_TZ=Asia/Tokyo,TZ_OFFSET=+09:00,TOKEN_BUCKET=gpts-oauth-tokens,BACKUP_BUCKET=gpts-plans-backup \
+            --set-secrets API_KEY=api-key:latest,OAUTH_CLIENT_ID=oauth-client-id:latest,OAUTH_CLIENT_SECRET=oauth-client-secret:latest,APP_SECRET=app-secret:latest
