@@ -1467,6 +1467,12 @@ def calendar_register_by_wbs():
         "updated": updated,
         "skipped": skipped
     }), 200
+
+# 例：末尾あたりに追加
+@app.route("/check")
+def check():
+    return "main.py loaded, revision OK"
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
