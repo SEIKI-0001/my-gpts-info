@@ -40,7 +40,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar.events",
 ]
 # ========= API Key check (OAuthエンドポイント等は免除) =========
-EXEMPT_PATHS = {"/","/healthz", "/oauth/start", "/oauth/callback"}
+EXEMPT_PATHS = {"/","/healthz", "/oauth/start", "/oauth/callback","health"}
 @app.before_request
 def check_api_key():
     cl = request.content_length or 0
