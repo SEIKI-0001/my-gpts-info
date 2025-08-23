@@ -1,37 +1,57 @@
-# .github/workflows/deploy.yml （例）
+# .github/workflows/deploy.yml
 name: Deploy to Cloud Run
 
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
-  id-token: write   # ★必須（OIDC）
+  id-token: write   # ★OIDC 必須
   contents: read
+
+env:
+  GCP_REGION: asia-northeast1
+  SERVICE_NAME: gpts-api-v2
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ★ GitHub → GCP OIDC 認証（Workload Identity Federation）
       - id: auth
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.GCP_WIF_POOL }}/providers/${{ secrets.GCP_WIF_PROVIDER }}
-          service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}   # 例: gcr-deployer@<PROJECT_ID>.iam.gserviceaccount.com
+          service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}
 
-      - uses: google-github-actions/setup-gcloud@v2
+      # gcloud セットアップ（auth@v2 の認証を自動で引き継ぐ）
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      # （任意）WIF パスの簡易チェック。動いたら削除可。
+      - name: Debug WIF path (temporary)
+        run: |
+          WIF="projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ secrets.GCP_WIF_POOL }}/providers/${{ secrets.GCP_WIF_PROVIDER }}"
+          echo "WIF=${WIF}"
+          if [ -z "${WIF}" ] || [[ "${WIF}" == *"//"* ]]; then
+            echo "WIF is empty or malformed"; exit 1
+          fi
 
       - name: Configure gcloud project
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud config set run/region $GCP_REGION
           gcloud --version
 
       # Cloud Run にソースデプロイ（Buildpacks）
-      - name: Deploy to Cloud Run
+      - name: Deploy to Cloud Run (source)
         run: |
-          gcloud run deploy gpts-api-v2 \
+          gcloud run deploy "$SERVICE_NAME" \
             --source . \
-            --region asia-northeast1 \
+            --region "$GCP_REGION" \
             --allow-unauthenticated
