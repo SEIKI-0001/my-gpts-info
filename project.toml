@@ -1,0 +1,3 @@
+# project.toml（リポジトリのルート直下）
+[build]
+builder = "gcr.io/buildpacks/builder:google-24"
